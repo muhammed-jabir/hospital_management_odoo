@@ -1,0 +1,59 @@
+<odoo>
+
+<record id="action_report_appointment" model="ir.actions.report">
+    <field name="name">Appointment Confirmation</field>
+    <field name="model">hospital.appoinment</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">hospital_management.report_appointment_document</field>
+    <field name="report_file">hospital_management.report_appointment_document</field>
+    <field name="binding_model_id" ref="model_hospital_appoinment"/>
+    <field name="binding_type">report</field>
+</record>
+
+    <template id="report_appointment_document">
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2 class="text-center">Appointment Confirmation</h2>
+
+                    <div class="row mt-4">
+                        <div class="col-6">
+                            <strong>Patient Name:</strong>
+                            <p t-esc="o.name"/>
+                        </div>
+                        <div class="col-6">
+                            <strong>Appointment Date:</strong>
+                            <p t-esc="o.date"/>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6">
+                            <strong>Doctor:</strong>
+                            <p t-esc="o.doctor_id.name"/>
+                        </div>
+                        <div class="col-6">
+                            <strong>Department:</strong>
+                            <p t-esc="o.department_id.name"/>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6">
+                            <strong>Phone:</strong>
+                            <p t-esc="o.phone"/>
+                        </div>
+                        <div class="col-6">
+                            <strong>Status:</strong>
+                            <p t-esc="o.state"/>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </t>
+</template>
+</odoo>
+
+

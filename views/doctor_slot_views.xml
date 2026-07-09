@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_doctor_slots_tree" model="ir.ui.view">
+        <field name="name">hospital.doctor.slot.tree</field>
+        <field name="model">hospital.doctor.slots</field>
+        <field name="arch" type="xml">
+            <tree string="Doctor Slots"  decoration-success="state == 'available'" decoration-muted="state == 'booked'">
+                <field name="doctor_id"/>
+                <field name="date"/>
+                <field name="time_slot"/>
+                <field name="state" widget="badge" decoration-success="state == 'available'" decoration-danger="state == 'booked'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_doctor_slots_form" model="ir.ui.view">
+        <field name="name">hospital.doctor.slot.form</field>
+        <field name="model">hospital.doctor.slots</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="doctor_id"/>
+                        <field name="date"/>
+                        <field name="time_slot"/>
+                        <field name ="state" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_hospital_appoinment_graph" model="ir.ui.view">
+    <field name="name">hospital.appoinment.graph</field>
+    <field name="model">hospital.appoinment</field>
+    <field name="arch" type="xml">
+        <graph string="Appointments Revenue" type="bar">
+            <field name="date" type="row"/>
+            <field name="revenue" type="measure"/>
+        </graph>
+    </field>
+</record>
+
+<record id="view_hospital_appoinment_pivot" model="ir.ui.view">
+    <field name="name">hospital.appoinment.pivot</field>
+    <field name="model">hospital.appoinment</field>
+    <field name="arch" type="xml">
+        <pivot string="Appointments Analysis">
+            <field name="doctor_id" type="row"/>
+            <field name="state" type="col"/>
+            <field name="revenue" type="measure"/>
+        </pivot>
+    </field>
+</record>
+
+    <record id="action_doctor_slots" model="ir.actions.act_window">
+        <field name="name">Doctor Slot</field>
+        <field name="res_model">hospital.doctor.slots</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_doctor_slot"
+              name="Doctor Slots"
+              parent="menu_hospital_root"
+              action="action_doctor_slots"
+              groups="hospital_management.group_hospital_admin,hospital_management.group_hospital_department_manager" sequence="3"/>
+
+
+</odoo>

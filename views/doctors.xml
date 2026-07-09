@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- DOCTOR TREE VIEW -->
+    <record id="view_hospital_doctor_tree" model="ir.ui.view">
+        <field name="name">hospital.doctor.tree</field>
+        <field name="model">hospital.doctor</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="age"/>
+                <field name="department_id"/>
+                <field name="phone"/>
+                <field name="experience_level" readonly="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- DOCTOR FORM VIEW -->
+    <record id="view_hospital_doctor_form" model="ir.ui.view">
+        <field name="name">hospital.doctor.form</field>
+        <field name="model">hospital.doctor</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="registration_no"/>
+                        <field name="age"/>
+                        <field name="experience_level" readonly="1"/>
+                        <field name="department_id"/>
+                        <field name="phone"/>
+                        <field name="email"/>
+                        <field name="user_id" string="Linked User Login"/>
+                        <field name="image" widget="image"/>
+                    </group>
+                    <notebook>
+                    <page string="Available Slots">
+                        <field name="slot_id">
+                            <tree editable="bottom">
+                                <field name="date"/>
+                                <field name="time_slot"/>
+                                <field name="state"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hospital_doctor" model="ir.actions.act_window">
+        <field name="name">Doctors</field>
+        <field name="res_model">hospital.doctor</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- DEPARTMENT TREE + FORM -->
+    <record id="view_hospital_department_tree" model="ir.ui.view">
+        <field name="name">hospital.department.tree</field>
+        <field name="model">hospital.department</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_hospital_department_form" model="ir.ui.view">
+        <field name="name">hospital.department.form</field>
+        <field name="model">hospital.department</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="manager_id" string="Department Manager"/>
+                    </group>
+                    <notebook>
+                        <page string="Doctors">
+                            <field name="doctor_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="phone"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hospital_department" model="ir.actions.act_window">
+        <field name="name">Departments</field>
+        <field name="res_model">hospital.department</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- APPOINTMENT TREE + FORM -->
+    <record id="view_hospital_appoinment_tree" model="ir.ui.view">
+        <field name="name">hospital.appoinment.tree</field>
+        <field name="model">hospital.appoinment</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="date"/>
+                <field name="department_id"/>
+                <field name="doctor_id"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_hospital_appoinment_graph" model="ir.ui.view">
+        <field name="name">hospital.appoinment.graph</field>
+        <field name="model">hospital.appoinment</field>
+        <field name="arch" type="xml">
+            <graph string="Appointments Revenue" type="bar">
+                <field name="date" type="row"/>
+                <field name="revenue" type="measure"/>
+            </graph>
+        </field>
+    </record>
+    <record id="view_hospital_appoinment_pivot" model="ir.ui.view">
+        <field name="name">hospital.appoinment.pivot</field>
+        <field name="model">hospital.appoinment</field>
+        <field name="arch" type="xml">
+            <pivot string="Appointments Analysis">
+                <field name="doctor_id" type="row"/>
+                <field name="state" type="col"/>
+                <field name="revenue" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="view_hospital_appoinment_search" model="ir.ui.view">
+        <field name="name">hospital.appoinment.search</field>
+        <field name="model">hospital.appoinment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="doctor_id"/>
+                <field name="department_id"/>
+                <filter string="Today" name="filter_today" domain="[('date','=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="Pending" name="filter_pending" domain="[('state','=','pending')]"/>
+                <filter string="Confirmed" name="filter_confirmed" domain="[('state','=','confirmed')]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Doctor" name="group_doctor" context="{'group_by':'doctor_id'}"/>
+                    <filter string="Department" name="group_department" context="{'group_by':'department_id'}"/>
+                    <filter string="Status" name="group_state" context="{'group_by':'state'}"/>
+                    <filter string="Date" name="group_date" context="{'group_by':'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+   <record id="view_hospital_appoinment_form" model="ir.ui.view">
+    <field name="name">hospital.appoinment.form</field>
+    <field name="model">hospital.appoinment</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+                <field name="state" widget="statusbar" statusbar_visible="pending,confirmed,cancelled"/>
+            </header>
+            <sheet>
+                <group>
+                    <field name="name"/>
+                    <field name="email"/>
+                    <field name="phone"/>
+                    <field name="date"/>
+                    <field name="department_id"/>
+                    <field name="doctor_id" domain="[('department_id','=',department_id)]"/>
+                    <field name="medical_report" filename="medical_report_filename"/>
+                    <field name="medical_report_filename" invisible="1"/>
+                    <field name="slot_id" domain="[('doctor_id','=',doctor_id),('date','=',date),('state','=','available')]"/>
+                </group>
+            </sheet>
+        </form>
+    </field>
+</record>
+
+    <record id="action_hospital_appoinment" model="ir.actions.act_window">
+        <field name="name">Appointments</field>
+        <field name="res_model">hospital.appoinment</field>
+        <field name="view_mode">tree,form,graph,pivot</field>
+        <field name="search_view_id" ref="view_hospital_appoinment_search"/>
+    </record>
+    <record id="action_dashboard_today" model="ir.actions.act_window">
+        <field name="name">Today's Appointments</field>
+        <field name="res_model">hospital.appoinment</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('date','=', context_today().strftime('%Y-%m-%d'))]</field>
+        <field name="search_view_id" ref="view_hospital_appoinment_search"/>
+    </record>
+
+    <record id="action_dashboard_pending" model="ir.actions.act_window">
+        <field name="name">Pending Appointments</field>
+        <field name="res_model">hospital.appoinment</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('state','=','pending')]</field>
+        <field name="search_view_id" ref="view_hospital_appoinment_search"/>
+    </record>
+
+    <record id="action_dashboard_confirmed" model="ir.actions.act_window">
+        <field name="name">Confirmed Appointments</field>
+        <field name="res_model">hospital.appoinment</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('state','=','confirmed')]</field>
+        <field name="search_view_id" ref="view_hospital_appoinment_search"/>
+    </record>
+
+    <record id="action_dashboard_revenue" model="ir.actions.act_window">
+        <field name="name">Revenue Report</field>
+        <field name="res_model">hospital.appoinment</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="domain">[('state','=','confirmed')]</field>
+        <field name="search_view_id" ref="view_hospital_appoinment_search"/>
+    </record>
+
+    <!-- ================= RECORD RULES ================= -->
+    <!-- record for whast this user can see only filtering not permission -->
+
+
+    <!-- DOCTOR MODEL: doctors see everyone in their own department -->
+<record id="rule_appointment_patient_own" model="ir.rule">
+    <field name="name">Patient: only own appointments</field>
+    <field name="model_id" ref="model_hospital_appoinment"/>
+    <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+    <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+</record>
+    <!-- DOCTOR MODEL: department managers see doctors in their managed department -->
+    <record id="rule_doctor_dept_manager" model="ir.rule">
+        <field name="name">Department Manager: see doctors in managed department</field>
+        <field name="model_id" ref="model_hospital_doctor"/>
+        <field name="domain_force">[('department_id.manager_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hospital_department_manager'))]"/>
+    </record>
+
+    <!-- DEPARTMENT MODEL: doctor sees own department only -->
+    <record id="rule_department_own" model="ir.rule">
+        <field name="name">Doctor: only own department</field>
+        <field name="model_id" ref="model_hospital_department"/>
+        <field name="domain_force">[('doctor_ids.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hospital_doctor'))]"/>
+    </record>
+
+    <!-- DEPARTMENT MODEL: manager sees only their managed department -->
+    <record id="rule_department_manager_own" model="ir.rule">
+        <field name="name">Department Manager: only managed department</field>
+        <field name="model_id" ref="model_hospital_department"/>
+        <field name="domain_force">[('manager_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hospital_department_manager'))]"/>
+    </record>
+
+    <!-- APPOINTMENT MODEL -->
+    <record id="rule_appointment_doctor_own" model="ir.rule">
+        <field name="name">Doctor: only own appointments</field>
+        <field name="model_id" ref="model_hospital_appoinment"/>
+        <field name="domain_force">[('doctor_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hospital_doctor'))]"/>
+    </record>
+
+    <record id="rule_appointment_department" model="ir.rule">
+        <field name="name">Department Manager: only own department appointments</field>
+        <field name="model_id" ref="model_hospital_appoinment"/>
+        <field name="domain_force">[('department_id.manager_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hospital_department_manager'))]"/>
+    </record>
+
+    <!-- ================= MENUS ================= -->
+
+    <!-- menu item for what shown in a menu for a logined person,group based security  -->
+    <menuitem id="menu_hospital_root" name="Hospital"/>
+    <menuitem id="menu_hospital_dashboard"
+              name="Dashboard"
+              parent="menu_hospital_root"
+              sequence="5"/>
+    <menuitem id="menu_dashboard_today"
+              name="Today's Appointments"
+              parent="menu_hospital_dashboard"
+              action="action_dashboard_today"
+              sequence="1"/>
+    <menuitem id="menu_dashboard_pending"
+              name="Pending Appointments"
+              parent="menu_hospital_dashboard"
+              action="action_dashboard_pending"
+              sequence="2"/>
+    <menuitem id="menu_dashboard_confirmed"
+              name="Confirmed Appointments"
+              parent="menu_hospital_dashboard"
+              action="action_dashboard_confirmed"
+              sequence="3"/>
+    <menuitem id="menu_dashboard_revenue"
+              name="Revenue Report"
+              parent="menu_hospital_dashboard"
+              action="action_dashboard_revenue"
+              sequence="4"/>
+
+    <menuitem id="menu_hospital_doctor"
+              name="Doctors"
+              parent="menu_hospital_root"
+              action="action_hospital_doctor"
+              sequence="10"
+              groups="hospital_management.group_hospital_admin,hospital_management.group_hospital_department_manager"/>
+
+    <menuitem id="menu_hospital_department"
+              name="Departments"
+              parent="menu_hospital_root"
+              action="action_hospital_department"
+              sequence="20"
+              groups="hospital_management.group_hospital_admin,hospital_management.group_hospital_doctor,hospital_management.group_hospital_department_manager"/>
+
+    <menuitem id="menu_hospital_appoinment"
+              name="Appointments"
+              parent="menu_hospital_root"
+              action="action_hospital_appoinment"
+              sequence="30"/>
+
+    <!-- WEBSITE PAGE TEMPLATE -->
+    <template id="doctors_page" name="Doctors Page">
+        <t t-call="website.layout">
+            <section class="container mt-5">
+                <h1 class="text-center mb-4">Our Doctors</h1>
+                <div class="row">
+                    <t t-foreach="doctors" t-as="doc">
+                        <div class="col-md-4">
+                            <div class="card doctor-card text-center p-3">
+                                <t t-if="doc.image">
+    <img t-att-src="'/web/image/hospital.doctor/%s/image' % doc.id"
+         class="rounded-circle mx-auto"
+         style="width:120px;height:120px;object-fit:cover;"/>
+</t>
+                                <h5 class="mt-4"><t t-esc="doc.name"/></h5>
+                                <p><t t-esc="doc.department_id.name"/></p>
+                                <p><t t-esc="doc.phone"/></p>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </section>
+        </t>
+    </template>
+
+
+    <template id="my_appointments_page" name="My Appointments">
+    <t t-call="website.layout">
+        <section class="container mt-5">
+            <h1>My Appointments</h1>
+            <t t-foreach="appointments" t-as="appt">
+                <div class="card p-3 mb-2">
+                    <p>Doctor: <t t-esc="appt.doctor_id.name"/></p>
+                    <p>Date: <t t-esc="appt.date"/></p>
+                    <p>Time Slot: <t t-esc="appt.slot_id.name"/></p>
+                    <p>Status: <t t-esc="appt.state"/></p>
+                </div>
+            </t>
+        </section>
+    </t>
+</template>
+
+</odoo>
+

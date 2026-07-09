@@ -1,0 +1,19 @@
+<odoo>
+    <record id="mail_template_appointment_confirmation" model="mail.template">
+        <field name="name">Appointment Confirmation</field>
+        <field name="model_id" ref="model_hospital_appoinment"/>
+        <field name="subject">Appointment Confirmation</field>
+        <field name="email_from">jabirmon404@gmail.com</field>
+        <field name="email_to">{{ object.email }}</field>
+        <field name="body_html" type="html">
+            <p>Dear <strong t-out="object.name"/>,</p>
+            <p>Your appointment has been successfully booked.</p>
+            <table border="1" cellpadding="5">
+                <tr><td><b>Department</b></td><td t-out="object.department_id.name"/></tr>
+                <tr><td><b>Doctor</b></td><td t-out="object.doctor_id.name"/></tr>
+                <tr><td><b>Date</b></td><td t-out="object.date"/></tr>
+            </table>
+            <p>Thank you!</p>
+        </field>
+    </record>
+</odoo>

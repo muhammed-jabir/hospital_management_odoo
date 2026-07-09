@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- CUSTOM HOSPITAL HEADER -->
+    <template id="hospital_custom_header" inherit_id="website.layout">
+
+        <!-- REPLACE HEADER -->
+        <xpath expr="//header" position="replace">
+
+            <header style="background:#2c3e50; padding:15px; color:white;">
+                <div class="container">
+
+                    <h2>🏥 Caretera Hospital</h2>
+
+
+ <nav>
+
+    <t t-foreach="website.menu_id.child_id" t-as="menu">
+
+        <!-- IF HAS CHILDREN → DROPDOWN -->
+        <t t-if="menu.child_id">
+
+            <div class="dropdown d-inline-block">
+
+                <a class="dropdown-toggle"
+                   href="#"
+                   data-bs-toggle="dropdown">
+
+                    <t t-esc="menu.name"/>
+
+                </a>
+
+                <ul class="dropdown-menu">
+
+                    <t t-foreach="menu.child_id" t-as="sub">
+
+                        <li>
+                            <a class="dropdown-item"
+                               t-att-href="sub.url">
+
+                                <t t-esc="sub.name"/>
+
+                            </a>
+                        </li>
+
+                    </t>
+
+                </ul>
+
+            </div>
+
+        </t>
+
+        <!-- NORMAL MENU -->
+        <t t-else="">
+
+            <a t-att-href="menu.url"
+               class="me-3">
+
+                <t t-esc="menu.name"/>
+
+            </a>
+
+        </t>
+
+    </t>
+
+</nav>
+
+                </div>
+            </header>
+
+        </xpath>
+
+    </template>
+
+    <template id="hospital_custome_footer" inherit_id="website.layout">
+
+        <xpath expr="//footer" position="replace">
+             <footer style="background:#222;color:white;padding:30px;">
+            <div class="container">
+
+                <h4>Caretera Hospital</h4>
+
+                <p>© 2026 All Rights Reserved.</p>
+
+            </div>
+        </footer>
+        </xpath>
+    </template>
+
+</odoo>

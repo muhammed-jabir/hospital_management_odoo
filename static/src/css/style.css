@@ -1,0 +1,41 @@
+/* HERO SECTION */
+.hero-section {
+    background: linear-gradient(135deg, #2c3e50, #3498db);
+    color: white;
+    padding: 100px 20px;
+}
+
+/* SERVICE CARDS */
+.service-card {
+    padding: 20px;
+    margin-bottom: 20px;
+    border: none;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    transition: 0.3s;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+}
+
+.doctor-card {
+    border: none;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    transition: 0.3s;
+    margin-bottom: 20px;
+}
+
+.doctor-card:hover {
+    transform: scale(1.05);
+}
+.doctor-card img {
+    border: 3px solid #3498db;
+    padding: 3px;
+    background: white;
+}
+
+.service-card i {
+    margin-bottom: 10px;
+}

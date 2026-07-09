@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="booking_page" name="Booking Page">
+        <t t-call="website.layout">
+            <div class="container mt-5">
+                <h2 class="text-center mb-4">Book Appointment</h2>
+
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <div class="card p-4 shadow">
+
+                            <form action="/booking/submit" method="post" enctype="multipart/form-data">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                                <input type="text" name="patient_name" class="form-control mb-3" placeholder="Full Name" required="required"/>
+                                <input type="email" name="email" class="form-control mb-3" placeholder="Email" required="required"/>
+                                <input type="text" name="phone" class="form-control mb-3" placeholder="Phone Number" required="required"/>
+
+                                <label style="font-weight: bold;" class="mb-1">Appointment Date</label>
+                                <input type="date" name="date" id="appointment_date" class="form-control mb-3" required="required"/>
+
+                                <label style="font-weight: bold;" class="mb-1">Department</label>
+                                <select name="department_id" id="department_select" class="form-control mb-3" required="required">
+                                    <option value="">Select Department</option>
+                                    <t t-foreach="departments" t-as="dept">
+                                        <option t-att-value="dept.id"><t t-esc="dept.name"/></option>
+                                    </t>
+                                </select>
+
+                                <label style="font-weight: bold;" class="mb-1">Doctor</label>
+                                <select name="doctor_id" id="doctor_select" class="form-control mb-3" required="required">
+                                    <option value="">Select Department First</option>
+                                </select>
+
+                                <div class="form-group mb-3 d-none" id="time_slot_section">
+                                    <label style="font-weight: bold;" class="mb-2">Available Time Slots</label>
+                                    <div class="d-flex flex-wrap gap-2" id="slots_container">
+                                        <t t-foreach="slots" t-as="slot">
+                                            <div class="slot-item d-none" t-att-data-doctor-id="slot.doctor_id.id" t-att-data-date="slot.date">
+                                                <input type="radio" class="btn-check" name="slot_id" t-att-id="'slot_' + str(slot.id)" t-att-value="slot.id" required="required" style="display:none;"/>
+                                                <label class="btn btn-outline-primary px-3 py-2 m-1 slot-btn" t-att-for="'slot_' + str(slot.id)" style="cursor:pointer; border-radius:20px;">
+                                                    <t t-esc="slot.time_slot"/>
+                                                </label>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+
+                                <div class="form-check mb-3">
+                                    <input type="checkbox" class="form-check-input" id="has_previous_report" name="has_previous_report" value="1"/>
+                                    <label class="form-check-label" for="has_previous_report">Do you have any previous medical reports?</label>
+                                </div>
+
+                                <div class="mb-3" id="report_upload_section" style="display: none;">
+                                    <label for="medical_report" class="form-label">Upload Medical Report</label>
+                                    <input type="file" name="medical_report" id="medical_report" class="form-control"/>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary w-100">Pay &amp; Book Appointment (₹500)</button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                .btn-check:checked + .slot-btn {
+                    background-color: #007bff !important;
+                    color: white !important;
+                }
+            </style>
+
+            <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', function () {
+                var deptSelect = document.getElementById('department_select');
+                var docSelect = document.getElementById('doctor_select');
+                var dateInput = document.getElementById('appointment_date');
+                var slotSection = document.getElementById('time_slot_section');
+                var slotItems = document.querySelectorAll('.slot-item');
+
+                function refreshAvailableSlots() {
+                    var chosenDoctor = docSelect.value;
+                    var chosenDate = dateInput.value;
+
+                    if (chosenDoctor &amp;&amp; chosenDate) {
+                        var visibleCount = 0;
+                        slotItems.forEach(function (item) {
+                            var slotDoc = item.getAttribute('data-doctor-id');
+                            var slotDate = item.getAttribute('data-date');
+
+                            if (slotDoc === chosenDoctor &amp;&amp; slotDate === chosenDate) {
+                                item.classList.remove('d-none');
+                                visibleCount++;
+                            } else {
+                                item.classList.add('d-none');
+                                var inputElement = item.querySelector('input');
+                                if (inputElement) {
+                                    inputElement.checked = false;
+                                }
+                            }
+                        });
+
+                        if (visibleCount > 0) {
+                            slotSection.classList.remove('d-none');
+                        } else {
+                            slotSection.classList.add('d-none');
+                        }
+                    } else {
+                        slotSection.classList.add('d-none');
+                    }
+                }
+
+                if (docSelect) docSelect.addEventListener('change', refreshAvailableSlots);
+                if (dateInput) dateInput.addEventListener('change', refreshAvailableSlots);
+
+                if (deptSelect) {
+                    deptSelect.addEventListener('change', function () {
+                        var deptId = deptSelect.value;
+                        if (!docSelect) return;
+
+                        docSelect.innerHTML = '&lt;option value=""&gt;Loading...&lt;/option&gt;';
+
+                        if (!deptId) {
+                            docSelect.innerHTML = '&lt;option value=""&gt;Select Department First&lt;/option&gt;';
+                            refreshAvailableSlots();
+                            return;
+                        }
+
+                        fetch('/get_doctors', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ jsonrpc: "2.0", params: { department_id: deptId } })
+                        })
+                        .then(function (response) { return response.json(); })
+                        .then(function (data) {
+                            var doctors = data.result;
+                            docSelect.innerHTML = '&lt;option value=""&gt;Select Doctor&lt;/option&gt;';
+                            if (!doctors || doctors.length === 0) {
+                                docSelect.innerHTML = '&lt;option value=""&gt;No doctors in this department&lt;/option&gt;';
+                                refreshAvailableSlots();
+                                return;
+                            }
+                            doctors.forEach(function (doc) {
+                                var opt = document.createElement('option');
+                                opt.value = doc.id;
+                                opt.textContent = doc.name;
+                                docSelect.appendChild(opt);
+                            });
+                            refreshAvailableSlots();
+                        });
+                    });
+                }
+
+                // Medical report visibility control checkbox
+                var checkbox = document.getElementById('has_previous_report');
+                var uploadSection = document.getElementById('report_upload_section');
+                if (checkbox &amp;&amp; uploadSection) {
+                    checkbox.addEventListener('change', function () {
+                        uploadSection.style.display = checkbox.checked ? 'block' : 'none';
+                    });
+                }
+            });
+            </script>
+        </t>
+    </template>
+
+    <template id="booking_thank_you_page" name="Booking Thank You">
+        <t t-call="website.layout">
+            <div class="container mt-5 text-center">
+                <h2>Thank you!</h2>
+                <p>Your appointment request has been received. We'll contact you shortly to confirm.</p>
+                <a href="/" class="btn btn-primary mt-3">Back to Home</a>
+            </div>
+        </t>
+    </template>
+</odoo>

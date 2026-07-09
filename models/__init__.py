@@ -1,0 +1,1 @@
+from . import doctor,appoinment,department,doctor_slot

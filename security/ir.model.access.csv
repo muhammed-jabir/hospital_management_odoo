@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hospital_doctor_admin,access.hospital.doctor.admin,model_hospital_doctor,group_hospital_admin,1,1,1,1
+access_hospital_department_admin,access.hospital.department.admin,model_hospital_department,group_hospital_admin,1,1,1,1
+access_hospital_appoinment_admin,access.hospital.appoinment.admin,model_hospital_appoinment,group_hospital_admin,1,1,1,1
+access_hospital_appoinment_public,access.hospital.appoinment.public,model_hospital_appoinment,base.group_public,1,0,0,0
+access_hospital_appoinment_doctor,access.hospital.appoinment.doctor,model_hospital_appoinment,group_hospital_doctor,1,1,1,0
+access_hospital_appoinment_dept,access.hospital.appoinment.department,model_hospital_appoinment,group_hospital_department_manager,1,1,1,0
+access_hospital_doctor_dept_manager,access.hospital.doctor.dept.manager,model_hospital_doctor,group_hospital_department_manager,1,1,0,0
+access_hospital_department_dept_manager,access.hospital.department.dept.manager,model_hospital_department,group_hospital_department_manager,1,0,0,0
+access_hospital_department_doctor,access.hospital.department.doctor,model_hospital_department,group_hospital_doctor,1,0,0,0
+access_hospital_appoinment_portal,access.hospital.appoinment.portal,model_hospital_appoinment,base.group_portal,1,0,0,0
+access_hospital_doctor_portal,access.hospital.doctor.portal,model_hospital_doctor,base.group_portal,1,0,0,0
+access_hospital_doctor_public,access.hospital.doctor.public,model_hospital_doctor,base.group_public,1,0,0,0
+access_hospital_slots_admin,hospital.slots.admin,model_hospital_doctor_slots,hospital_management.group_hospital_admin,1,1,1,1
+access_hospital_slots_manager,hospital.slots.manager,model_hospital_doctor_slots,hospital_management.group_hospital_department_manager,1,1,1,1
+access_hospital_slots_user,hospital.slots.user,model_hospital_doctor_slots,base.group_user,1,0,0,0

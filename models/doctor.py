@@ -12,7 +12,7 @@ class HospitalDoctor(models.Model):
     email=fields.Char(string='Email Address')
     department_id = fields.Many2one(
         "hospital.department"
-    )  # mahy doctors can one dept
+    )  # many doctors can one dept
     image= fields.Image(string="Doctor Image")
     experience_level=fields.Char(string="Experience Level",compute="_compute_experience_level")
     user_id=fields.Many2one('res.users',string='Linked user login')# link with users  linked user setting in odoo

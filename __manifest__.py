@@ -14,11 +14,18 @@
         'data/mail_template_new.xml',
         'views/doctor_slot_views.xml'
 
-    ],
+        ],
 
     'assets': {
         'web.assets_frontend': [
             'hospital_management/static/src/css/style.css',
+            'hospital_management/static/lib/gsap/gsap.min.js',
+            'hospital_management/static/lib/gsap/ScrollTrigger.min.js',
+            'hospital_management/static/src/js/animation.js',
+            'hospital_management/static/src/css/carousal.css',
+            'hospital_management/static/src/js/carousal.js',
+            'hospital_management/static/lib/gsap/'
+
         ],
     },
 

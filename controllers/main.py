@@ -1,10 +1,8 @@
 import base64
 import time
 import logging
-from locale import currency
 
 from odoo import http
-from odoo.addons.base.models.ir_actions_report import available
 from odoo.http import request
 from odoo.addons.payment.controllers.post_processing import PaymentPostProcessing
 

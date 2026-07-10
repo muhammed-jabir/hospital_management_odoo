@@ -223,7 +223,7 @@
 
 
     <!-- DOCTOR MODEL: doctors see everyone in their own department -->
-<record id="rule_appointment_patient_own" model="ir.rule">
+     <record id="rule_appointment_patient_own" model="ir.rule">
     <field name="name">Patient: only own appointments</field>
     <field name="model_id" ref="model_hospital_appoinment"/>
     <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>

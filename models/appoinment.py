@@ -2,7 +2,7 @@ from datetime import date
 
 from odoo import fields, models,api
 from odoo.exceptions import ValidationError
-from odoo.fields import Many2one
+
 
 
 class HospitalAppoinment(models.Model):
@@ -23,9 +23,7 @@ class HospitalAppoinment(models.Model):
     ], string='Status', default='pending')
     medical_report=fields.Binary(string='Medical Report')
     medical_report_filename=fields.Char(string='Medical report filename')
-    slot_id=fields.Many2one(
-        'hospital.doctor.slots',string='Available Time Slots',required=True)
-
+    slot_id=fields.Many2one('hospital.doctor.slots',string='Available Time Slots',required=True)
     amount=fields.Float(string='Fees',default=500.0)
     revenue=fields.Float(string='Revenue',compute='_compute_revenue',store=True)
 
@@ -47,7 +45,7 @@ class HospitalAppoinment(models.Model):
             old_slot=self.slot_id
             res=super(HospitalAppoinment,self).write(vals)
             if old_slot:
-                old_slot,state='available'
+                old_slot.state= 'available'
             self.slot_id.state='booked'
             return res
         return super(HospitalAppoinment,self).write(vals)
@@ -59,11 +57,13 @@ class HospitalAppoinment(models.Model):
         return super(HospitalAppoinment,self).unlink()
 
 
-
     @api.constrains('date')
     def _check_date(self):
         for dat in self:
             if dat.date and dat.date < date.today():
                 raise ValidationError('Date must be future')
+
+
+    
 
 

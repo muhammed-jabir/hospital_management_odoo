@@ -6,17 +6,20 @@
 }
 
 /* SERVICE CARDS */
-.service-card {
+.service-section {
     padding: 20px;
     margin-bottom: 20px;
     border: none;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     border-radius: 12px;
-    transition: 0.3s;
+    transition:
+        transform .35s ease,
+        box-shadow .35s ease;
 }
 
 .service-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0,0,0,.15);
 }
 
 .doctor-card {
@@ -40,14 +43,8 @@
     margin-bottom: 10px;
 }
 
-
-body {
-  height: 100vh;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
+.carousel-section {
+    position:relative;
+    z-index:5;
 }
-
 

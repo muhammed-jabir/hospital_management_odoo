@@ -64,6 +64,8 @@ class HospitalAppoinment(models.Model):
                 raise ValidationError('Date must be future')
 
 
+
+
     
 
 

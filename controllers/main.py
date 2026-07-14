@@ -22,6 +22,11 @@ class Hospital(http.Controller):
             'doctors': doctors
         })
 
+    @http.route('/gallery',auth='public',website=True)
+    def gallery(self, **kw):
+        return  request.render('hospital_management.gallery_page')
+
+
     @http.route('/booking', auth='public', website=True)
     def booking(self, **kw):
         departments = request.env['hospital.department'].sudo().search([])

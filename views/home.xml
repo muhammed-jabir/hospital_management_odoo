@@ -4,6 +4,8 @@
 <template id="home_page" name="Hospital Home Page">
     <t t-call="website.layout">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"/>
+
+
         <section class="hero-section">
             <div class="container text-center">
 
@@ -19,13 +21,13 @@
         </section>
 
         <!-- SERVICES -->
-        <section class="container mt-5">
+        <section class="service-section container mt-5">
     <h2 class="text-center mb-4">Our Services</h2>
 
     <div class="row">
 
         <div class="col-md-4">
-            <div class="card service-card text-center p-4">
+            <div class="card service-section text-center p-4">
                 <i class="bi bi-heart-pulse-fill fs-1 text-danger"/>
                 <h5 class="mt-3">Emergency Care</h5>
                 <p>24/7 emergency response with critical care support.</p>
@@ -33,7 +35,7 @@
         </div>
 
         <div class="col-md-4">
-            <div class="card service-card text-center p-4">
+            <div class="card service-section text-center p-4">
                 <i class="bi bi-person-badge-fill fs-1 text-primary"/>
                 <h5 class="mt-3">Specialist Doctors</h5>
                 <p>Experienced doctors across all departments.</p>
@@ -41,7 +43,7 @@
         </div>
 
         <div class="col-md-4">
-            <div class="card service-card text-center p-4">
+            <div class="card service-section text-center p-4">
                 <i class="bi bi-calendar-check-fill fs-1 text-success"/>
                 <h5 class="mt-3">Online Booking</h5>
                 <p>Book appointments anytime, anywhere easily.</p>
@@ -50,7 +52,7 @@
     </div>
         </section>
 
-       <section class="container mt-5">
+       <section class="doctor-section container mt-5">
                 <h1 class="text-center mb-4">Our Doctors</h1>
            <t t-set="doctors" t-value="request.env['hospital.doctor'].sudo().search([])"/>
                 <div class="row">
@@ -70,22 +72,54 @@
                     </t>
                 </div>
        </section>
-        <section class="container mt-5">
-            <div class="wrapper">
-  <div class="container">
-    <img src="/hospital_management/static/images/hosp1.jpegg" alt="" />
-    <img src="https://assets.codepen.io/16327/portrait-number-2.png" alt="" />
-    <img src="https://assets.codepen.io/16327/portrait-number-3.png" alt="" />
-    <img src="https://assets.codepen.io/16327/portrait-number-4.png" alt="" />
+
+        <section class="carousel-section  mt-5">
+        <h2 class="text-center mb-4">Carousel</h2>
+
+       <div class="wrapper">
+            <div class="flip-container">
+                <img src="/hospital_management/static/src/images/hosp1.jpeg" alt=""/>
+                <img src="/hospital_management/static/src/images/hosp2.jpg" alt=""/>
+                <img src="/hospital_management/static/src/images/hosp3.png" alt=""/>
+                <img src="/hospital_management/static/src/images/hosp4.jpg" alt=""/>
+            </div>
+            <div class="buttons">
+                <button id="prev" class="arrow arrow-left">‹</button>
+                <button id="next" class="arrow arrow-right">›</button>
+            </div>
+        </div>
+</section>
+
+
+        <section class="album-section mt-5">
+        <div class="album-wrapper">
+  <div class="album-boxes-container">
+    <div class="album-box">
+      <div class="album-box-content one"></div>
+    </div>
+    <div class="album-box">
+      <div class="album-box-content two"></div>
+    </div>
+    <div class="album-box">
+      <div class="album-box-content three"></div>
+    </div>
+    <div class="album-box">
+      <div class="album-box-content four"></div>
+    </div>
+    <div class="album-box">
+      <div class="album-box-content five"></div>
+    </div>
+    <div class="album-box">
+      <div class="album-box-content six"></div>
+    </div>
   </div>
-  <div class="buttons">
-    <button id="next">Next</button>
-    <button id="prev">Previous</button>
-  </div>
+</div>
+<div class="album-modal">
+  <div class="overlay"></div>
+  <div class="content"></div>
 </div>
         </section>
 
     </t>
 </template>
-
 </odoo>

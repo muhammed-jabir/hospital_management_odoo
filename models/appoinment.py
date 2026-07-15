@@ -36,7 +36,7 @@ class HospitalAppoinment(models.Model):
     def create(self,vals):
         appointment=super(HospitalAppoinment,self).create(vals)
         if appointment.slot_id:
-            appointment.slot_id.state='booked'
+            appointment.slot_id.write({'state':'booked','held_at':False})
         return appointment
 
 
@@ -56,12 +56,17 @@ class HospitalAppoinment(models.Model):
                 rec.slot_id.state='Available'
         return super(HospitalAppoinment,self).unlink()
 
-
-    @api.constrains('date')
-    def _check_date(self):
-        for dat in self:
-            if dat.date and dat.date < date.today():
-                raise ValidationError('Date must be future')
+    @api.constrains('slot_id')
+    def _check_slot_available(self):
+        for rec in self:
+            if rec.slot_id and rec.slot_id.state == 'booked':
+                existing = self.search_count([
+                    ('slot_id', '=', rec.slot_id.id),
+                    ('id', '!=', rec.id),
+                    ('state', '!=', 'cancelled'),
+                ])
+                if existing:
+                    raise ValidationError('This slot has already been booked. Please choose another.')
 
 
 

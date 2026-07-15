@@ -2,7 +2,8 @@ import base64
 import time
 import logging
 
-from odoo import http
+
+from odoo import http,fields
 from odoo.http import request
 from odoo.addons.payment.controllers.post_processing import PaymentPostProcessing
 
@@ -21,6 +22,9 @@ class Hospital(http.Controller):
         return request.render('hospital_management.doctors_page', {
             'doctors': doctors
         })
+    @http.route('/about',auth='public',website=True)
+    def about(self, **kw):
+        return request.render('hospital_management.about_page')
 
     @http.route('/gallery',auth='public',website=True)
     def gallery(self, **kw):
@@ -65,6 +69,13 @@ class Hospital(http.Controller):
             'medical_report': file_base64,
             'medical_report_filename': file_name,
         }
+        slot_id=post.get('slot_id')
+        if slot_id:
+            slot=request.env['hospital.doctor.slots'].sudo().browse(int())  #checking here and if 2nd person tryng cant access
+            if slot.state !='available':
+                return request.redirect('/booking')
+            slot.write({'state':'held','held_at':fields.Datetime.now()})
+
 
         # STEP B: Find or create a "contact" for this patient
         partner = request.env['res.partner'].sudo().search(

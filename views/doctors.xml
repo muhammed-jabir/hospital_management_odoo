@@ -50,6 +50,14 @@
         </field>
     </record>
 
+    <record id="action_doctor_dashboard" model="ir.actions.client">
+
+    <field name="name">Doctor Dashboard</field>
+
+    <field name="tag">hospital_management.doctor_dashboard</field>
+
+</record>
+
     <record id="action_hospital_doctor" model="ir.actions.act_window">
         <field name="name">Doctors</field>
         <field name="res_model">hospital.doctor</field>
@@ -217,37 +225,40 @@
         <field name="view_mode">kanban,tree,form,graph,pivot</field>
         <field name="search_view_id" ref="view_hospital_appoinment_search"/>
     </record>
-    <record id="action_dashboard_today" model="ir.actions.act_window">
-        <field name="name">Today's Appointments</field>
-        <field name="res_model">hospital.appoinment</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[('date','=', context_today().strftime('%Y-%m-%d'))]</field>
-        <field name="search_view_id" ref="view_hospital_appoinment_search"/>
-    </record>
+    <record id="action_doctor_my_appointments" model="ir.actions.act_window">
 
-    <record id="action_dashboard_pending" model="ir.actions.act_window">
-        <field name="name">Pending Appointments</field>
-        <field name="res_model">hospital.appoinment</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[('state','=','pending')]</field>
-        <field name="search_view_id" ref="view_hospital_appoinment_search"/>
-    </record>
+    <field name="name">My Appointments</field>
 
-    <record id="action_dashboard_confirmed" model="ir.actions.act_window">
-        <field name="name">Confirmed Appointments</field>
-        <field name="res_model">hospital.appoinment</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[('state','=','confirmed')]</field>
-        <field name="search_view_id" ref="view_hospital_appoinment_search"/>
-    </record>
+    <field name="res_model">hospital.appoinment</field>
 
-    <record id="action_dashboard_revenue" model="ir.actions.act_window">
-        <field name="name">Revenue Report</field>
-        <field name="res_model">hospital.appoinment</field>
-        <field name="view_mode">graph,pivot</field>
-        <field name="domain">[('state','=','confirmed')]</field>
-        <field name="search_view_id" ref="view_hospital_appoinment_search"/>
-    </record>
+    <field name="view_mode">tree,form</field>
+
+    <field name="domain">
+        [('doctor_id.user_id','=',uid)]
+    </field>
+
+</record>
+
+    <record id="action_doctor_department" model="ir.actions.act_window">
+
+    <field name="name">
+        My Department
+    </field>
+
+    <field name="res_model">hospital.department</field>
+
+    <field name="view_mode">
+        tree,form
+    </field>
+
+    <field name="domain">
+        [('doctor_ids.user_id','=',uid)]
+    </field>
+
+</record>
+
+
+
 
     <!-- ================= RECORD RULES ================= -->
     <!-- record for whast this user can see only filtering not permission -->
@@ -298,35 +309,40 @@
         <field name="domain_force">[('department_id.manager_id', '=', user.id)]</field>
         <field name="groups" eval="[(4, ref('group_hospital_department_manager'))]"/>
     </record>
+    <record id="rule_doctor_own_profile" model="ir.rule">
+    <field name="name">Doctor: Only own profile</field>
+    <field name="model_id" ref="model_hospital_doctor"/>
+    <field name="domain_force">
+        [('user_id', '=', user.id)]
+    </field>
+    <field name="groups" eval="[(4, ref('hospital_management.group_hospital_doctor'))]"/>
+</record>
 
     <!-- ================= MENUS ================= -->
 
     <!-- menu item for what shown in a menu for a logined person,group based security  -->
     <menuitem id="menu_hospital_root" name="Hospital"/>
+
+    <menuitem
+id="menu_doctor_dashboard"
+name="Doctor Dashboard"
+parent="menu_hospital_root"
+action="action_doctor_dashboard"
+groups="hospital_management.group_hospital_doctor"
+/>
+
+
+<menuitem
+id="menu_doctor_appointments"
+name="My Appointments"
+parent="menu_hospital_root"
+action="action_doctor_my_appointments"
+groups="hospital_management.group_hospital_doctor"
+/>
     <menuitem id="menu_hospital_dashboard"
               name="Dashboard"
               parent="menu_hospital_root"
               sequence="5"/>
-    <menuitem id="menu_dashboard_today"
-              name="Today's Appointments"
-              parent="menu_hospital_dashboard"
-              action="action_dashboard_today"
-              sequence="1"/>
-    <menuitem id="menu_dashboard_pending"
-              name="Pending Appointments"
-              parent="menu_hospital_dashboard"
-              action="action_dashboard_pending"
-              sequence="2"/>
-    <menuitem id="menu_dashboard_confirmed"
-              name="Confirmed Appointments"
-              parent="menu_hospital_dashboard"
-              action="action_dashboard_confirmed"
-              sequence="3"/>
-    <menuitem id="menu_dashboard_revenue"
-              name="Revenue Report"
-              parent="menu_hospital_dashboard"
-              action="action_dashboard_revenue"
-              sequence="4"/>
 
     <menuitem id="menu_hospital_doctor"
               name="Doctors"
@@ -346,7 +362,9 @@
               name="Appointments"
               parent="menu_hospital_root"
               action="action_hospital_appoinment"
-              sequence="30"/>
+              sequence="30"
+              groups="hospital_management.group_hospital_admin"/>
+
 
     <!-- WEBSITE PAGE TEMPLATE -->
     <template id="doctors_page" name="Doctors Page">

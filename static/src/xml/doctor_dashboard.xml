@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-name="hospital_management.DoctorDashboard" owl="1">
+        <div class="doctor_dashboard">
+            <div class="doctor-profile">
+
+
+    <div class="doctor-image">
+
+        <img
+        t-if="state.doctor.image"
+        t-att-src="'/web/image?model=hospital.doctor&amp;id=1&amp;field=image'"
+        />
+
+    </div>
+
+
+    <div>
+
+        <h2>
+            <t t-esc="state.doctor.name"/>
+        </h2>
+
+
+        <p>
+            Department:
+            <t t-esc="state.doctor.department"/>
+        </p>
+
+
+        <p>
+            Experience:
+            <t t-esc="state.doctor.experience"/>
+        </p>
+
+
+        <p>
+            Phone:
+            <t t-esc="state.doctor.phone"/>
+        </p>
+
+
+    </div>
+
+
+</div>
+            <div class="cards">
+                <div class="card">
+                    <h3>
+                        Total appoinments
+                    </h3>
+                    <h2>
+                        <t t-esc="state.totalAppointments"/>
+                    </h2>
+
+                </div>
+                <div class="card">
+                    <h3>
+                        Todays Booking
+                    </h3>
+                    <h2>
+                        <t t-esc="state.todayAppointments"/>
+
+                    </h2>
+
+                </div>
+                <div class="card">
+                    <h3>
+                        My revenue
+                    </h3>
+                    <h2>
+                        <t t-esc="state.revenue"/>
+
+                    </h2>
+
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

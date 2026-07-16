@@ -173,3 +173,4 @@ class Hospital(http.Controller):
         return request.render('hospital_management.my_appointments_page', {
             'appointments': appointments
         })
+    

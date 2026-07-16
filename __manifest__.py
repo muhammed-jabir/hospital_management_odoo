@@ -14,8 +14,10 @@
         'views/doctor_slot_views.xml',
         'views/gallery.xml',
         'views/about.xml',
+        'views/login.xml',
         'data/mail_template_new.xml',
         'data/crone.xml',
+
 
 
         ],
@@ -30,8 +32,19 @@
         'hospital_management/static/src/css/animation.css',
 
         'hospital_management/static/src/js/animation.js',
+
         ],
+        'web.assets_backend':[
+
+             'hospital_management/static/src/xml/doctor_dashboard.xml',
+            'hospital_management/static/src/js/doctor_dashboard.js',
+
+            'hospital_management/static/src/css/doctor_dashboard.css',
+
+        ]
     },
+
+
         
 
     'installable': True,

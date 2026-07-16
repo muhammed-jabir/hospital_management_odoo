@@ -4,6 +4,7 @@
     <!-- CUSTOM HOSPITAL HEADER -->
     <template id="hospital_custom_header" inherit_id="website.layout">
 
+
         <!-- REPLACE HEADER -->
         <xpath expr="//header" position="replace">
 
@@ -65,7 +66,83 @@
 
     </t>
 
+
+
 </nav>
+
+                   <div class="ms-3">
+
+    <!-- PUBLIC USER -->
+    <t t-if="request.env.user._is_public()">
+
+        <a href="/login" class="login-icon">
+
+            <i class="fa fa-user"></i>
+            Login
+
+        </a>
+
+    </t>
+
+
+    <!-- LOGGED USER -->
+
+    <t t-else="">
+
+
+        <div class="dropdown">
+
+
+            <a class="dropdown-toggle"
+               href="#"
+               data-bs-toggle="dropdown">
+
+
+                <i class="fa fa-user-circle"></i>
+
+                <t t-esc="request.env.user.name"/>
+
+
+            </a>
+
+
+            <ul class="dropdown-menu">
+
+
+                <li>
+
+                    <a class="dropdown-item"
+                       href="/my/account">
+
+                       My Account
+
+                    </a>
+
+                </li>
+
+
+                <li>
+
+                    <a class="dropdown-item"
+                       href="/web/session/logout?redirect=/">
+
+                        Logout
+
+                    </a>
+
+                </li>
+
+
+            </ul>
+
+
+        </div>
+
+
+    </t>
+
+
+</div>
 
                 </div>
             </header>

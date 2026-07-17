@@ -15,4 +15,5 @@ access_hospital_slots_admin,hospital.slots.admin,model_hospital_doctor_slots,hos
 access_hospital_slots_manager,hospital.slots.manager,model_hospital_doctor_slots,hospital_management.group_hospital_department_manager,1,1,1,1
 access_hospital_slots_user,hospital.slots.user,model_hospital_doctor_slots,base.group_user,1,0,0,0
 access_hospital_doctor_doctor,access.hospital.doctor.doctor,model_hospital_doctor,group_hospital_doctor,1,1,1,0
-access_hospital_doctor_doctor,access.hospital.doctor.doctor,model_hospital_doctor,group_hospital_doctor,1,0,0,0
+access_hospital_patient_user,access.hospital.patient.user,model_hospital_patient,group_hospital_patient,1,1,1,0
+access_hospital_patient_admin,access.hospital.patient.admin,model_hospital_patient,group_hospital_admin,1,1,1,1

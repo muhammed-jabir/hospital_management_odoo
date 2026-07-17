@@ -1,1 +1,1 @@
-from . import main,login
+from . import main,login,register

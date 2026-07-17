@@ -271,6 +271,20 @@
     <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
     <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
 </record>
+    <record id="rule_patient_own_profile" model="ir.rule">
+
+    <field name="name">Patient only own profile</field>
+
+    <field name="model_id" ref="model_hospital_patient"/>
+
+
+    <field name="domain_force">[('user_id','=',user.id)]</field>
+
+
+    <field name="groups" eval="[(4, ref('hospital_management.group_hospital_patient'))]"/>
+
+</record>
+
     <!-- DOCTOR MODEL: department managers see doctors in their managed department -->
     <record id="rule_doctor_dept_manager" model="ir.rule">
         <field name="name">Department Manager: see doctors in managed department</field>
@@ -317,11 +331,61 @@
     </field>
     <field name="groups" eval="[(4, ref('hospital_management.group_hospital_doctor'))]"/>
 </record>
+<record id="view_hospital_patient_tree" model="ir.ui.view">
+    <field name="name">hospital.patient.tree</field>
+    <field name="model">hospital.patient</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+            <field name="email"/>
+            <field name="phone"/>
+            <field name="user_id"/>
+        </tree>
+    </field>
+</record>
+
+<record id="view_hospital_patient_form" model="ir.ui.view">
+    <field name="name">hospital.patient.form</field>
+    <field name="model">hospital.patient</field>
+    <field name="arch" type="xml">
+        <form>
+            <sheet>
+                <group>
+                    <field name="name"/>
+                    <field name="email"/>
+                    <field name="phone"/>
+                    <field name="age"/>
+                    <field name="gender"/>
+                    <field name="user_id"/>
+                </group>
+            </sheet>
+        </form>
+    </field>
+</record>
+
+<record id="action_hospital_patient" model="ir.actions.act_window">
+    <field name="name">Patients</field>
+    <field name="res_model">hospital.patient</field>
+    <field name="view_mode">tree,form</field>
+</record>
+
+    <record id="group_hospital_patient" model="res.groups">
+    <field name="name">Patient</field>
+    <field name="category_id" ref="module_category_hospital"/>
+</record>
+
 
     <!-- ================= MENUS ================= -->
 
     <!-- menu item for what shown in a menu for a logined person,group based security  -->
     <menuitem id="menu_hospital_root" name="Hospital"/>
+
+    <menuitem
+    id="menu_hospital_patient"
+    name="Patients"
+    parent="menu_hospital_root"
+    action="action_hospital_patient"
+    groups="hospital_management.group_hospital_admin"/>
 
     <menuitem
 id="menu_doctor_dashboard"

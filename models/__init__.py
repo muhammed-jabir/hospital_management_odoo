@@ -1,1 +1,1 @@
-from . import doctor,appoinment,department,doctor_slot
+from . import doctor,appoinment,department,doctor_slot,patient

@@ -15,6 +15,7 @@
         'views/gallery.xml',
         'views/about.xml',
         'views/login.xml',
+        'views/register.xml',
         'data/mail_template_new.xml',
         'data/crone.xml',
 

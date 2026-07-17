@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <template id="register_page" name="Patient Register">
+
+        <t t-call="website.layout">
+
+            <div class="container mt-5 mb-5">
+
+                <div class="row justify-content-center">
+
+                    <div class="col-lg-6">
+
+                        <div class="card shadow p-4">
+
+                            <h2 class="text-center mb-4">
+                                Create Patient Account
+                            </h2>
+
+                            <!-- THIS WAS MISSING: without this, any error passed
+                                 from register_submit() was silently thrown away
+                                 and the page just looked like nothing happened -->
+                            <div t-if="error" class="alert alert-danger" t-esc="error"/>
+
+                            <form action="/register/submit" method="post">
+
+                                <input type="hidden"
+                                       name="csrf_token"
+                                       t-att-value="request.csrf_token()"/>
+
+                                <div class="mb-3">
+                                    <label>Name</label>
+                                    <input type="text"
+                                           name="name"
+                                           class="form-control"
+                                           required="required"/>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Email</label>
+                                    <input type="email"
+                                           name="email"
+                                           class="form-control"
+                                           required="required"/>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Phone</label>
+                                    <input type="text"
+                                           name="phone"
+                                           class="form-control"
+                                           required="required"/>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Password</label>
+                                    <input type="password"
+                                           name="password"
+                                           class="form-control"
+                                           required="required"/>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary w-100">
+                                    Register
+                                </button>
+
+                            </form>
+
+                            <div class="text-center mt-3">
+                                Already have an account?
+                                <a href="/login">Login</a>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </t>
+
+    </template>
+
+</odoo>

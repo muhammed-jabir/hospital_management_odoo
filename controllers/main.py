@@ -107,6 +107,23 @@ class Hospital(http.Controller):
             'partner_id': partner.id,
             'operation': 'online_redirect',
         })
+        appointment_vals = {
+            'name': post.get('patient_name'),
+            'email': post.get('email'),
+            'phone': post.get('phone'),
+            'date': post.get('date'),
+            'department_id': int(post.get('department_id')),
+            'doctor_id': int(post.get('doctor_id')),
+            'slot_id': int(post.get('slot_id')),
+            'partner_id': partner.id,
+            'state': 'pending',
+        }
+
+        appointment = request.env['hospital.appoinment'].sudo().create(
+            appointment_vals
+        )
+
+        _logger.info("Appointment created ID: %s", appointment.id)
         PaymentPostProcessing.monitor_transactions(tx)
         tx.landing_route = f'/payment/success?reference={tx.reference}'
 
@@ -124,43 +141,116 @@ class Hospital(http.Controller):
     @http.route('/payment/success', type='http', auth='public', website=True)
     def payment_success(self, **kwargs):
 
-        # STEP F: Look up the payment attempt by its reference
+        # Find payment transaction
         tx = request.env['payment.transaction'].sudo().search(
-            [('reference', '=', kwargs.get('reference'))], limit=1
+            [('reference', '=', kwargs.get('reference'))],
+            limit=1
         )
 
-        # STEP G: Only proceed if payment genuinely succeeded
-        if not tx or tx.state != 'done':
+        if not tx:
+            _logger.warning("Payment transaction not found")
             return request.redirect('/booking')
 
+        # Get booking data from session
         data = request.session.get('booking_data')
+
         if not data:
+            _logger.warning("Booking session data missing")
             return request.redirect('/booking')
 
-        # STEP H: NOW actually create the appointment (only reached if paid)
-        appointment_vals = {
-            'name': data.get('patient_name'),
-            'email': data.get('email'),
-            'phone': data.get('phone'),
-            'date': data.get('date'),
-            'department_id': int(data['department_id']) if data.get('department_id') else False,
-            'doctor_id': int(data['doctor_id']) if data.get('doctor_id') else False,
-            'slot_id': int(data['slot_id']) if data.get('slot_id') else False,
-            'partner_id': tx.partner_id.id,
-            'state': 'pending',
-        }
-        if data.get('medical_report'):
-            appointment_vals['medical_report'] = data['medical_report'].encode('utf-8')
-            appointment_vals['medical_report_filename'] = data['medical_report_filename']
+        # Find patient record
+        patient = request.env['hospital.patient'].sudo().search(
+            [
+                ('email', '=', data.get('email'))
+            ],
+            limit=1
+        )
 
-        # NOTE: appointment now lands as 'pending'. The confirmation email
-        # is sent when the doctor calls action_confirm() on the appointment
-        # (see appoinment.py) instead of automatically here. Payment
-        # succeeding just means the slot is booked and the appointment is
-        # awaiting the doctor's confirmation.
-        request.env['hospital.appoinment'].sudo().create(appointment_vals)
+        # If patient does not exist create one
+        if not patient:
+            patient_user = request.env['res.users'].sudo().search(
+                [('partner_id', '=', tx.partner_id.id)],
+                limit=1
+            )
+
+            patient = request.env['hospital.patient'].sudo().create({
+
+                'name': data.get('patient_name'),
+
+                'email': data.get('email'),
+
+                'phone': data.get('phone'),
+
+                'partner_id': tx.partner_id.id,
+
+                'user_id': patient_user.id if patient_user else False,
+
+            })
+
+        # Prepare appointment data
+
+        appointment_vals = {
+
+            'name': data.get('patient_name'),
+
+            'email': data.get('email'),
+
+            'phone': data.get('phone'),
+
+            # Link patient
+            'patient_id': patient.id,
+
+            # Link contact
+            'partner_id': tx.partner_id.id,
+
+            'date': data.get('date'),
+
+            'department_id':
+                int(data['department_id'])
+                if data.get('department_id')
+                else False,
+
+            'doctor_id':
+                int(data['doctor_id'])
+                if data.get('doctor_id')
+                else False,
+
+            'slot_id':
+                int(data['slot_id'])
+                if data.get('slot_id')
+                else False,
+
+            # Doctor will confirm later
+            'state': 'pending',
+
+        }
+
+        # Medical report upload
+
+        if data.get('medical_report'):
+            appointment_vals['medical_report'] = (
+                data['medical_report'].encode('utf-8')
+            )
+
+            appointment_vals['medical_report_filename'] = (
+                data.get('medical_report_filename')
+            )
+
+        # Create appointment
+
+        appointment = request.env['hospital.appoinment'].sudo().create(
+            appointment_vals
+        )
+
+        _logger.info(
+            "Appointment created successfully ID: %s",
+            appointment.id
+        )
+
+        # Clear session
 
         request.session.pop('booking_data', None)
+
         return request.redirect('/booking-thank-you')
     @http.route('/booking-thank-you', auth='public', website=True)
     def booking_thank_you(self, **kw):
@@ -168,10 +258,19 @@ class Hospital(http.Controller):
 
     @http.route('/my-appointments', auth='user', website=True)
     def my_appointments(self, **kw):
-        partner = request.env.user.partner_id
-        appointments = request.env['hospital.appoinment'].sudo().search([
-            ('partner_id', '=', partner.id)
+
+        patient = request.env['hospital.patient'].search([
+            ('partner_id', '=', request.env.user.partner_id.id)
+        ], limit=1)
+
+        appointments = request.env['hospital.appoinment'].search([
+            ('patient_id', '=', patient.id)
         ])
-        return request.render('hospital_management.my_appointments_page', {
-            'appointments': appointments
-        })
+
+        return request.render(
+            'hospital_management.my_appointments_page',
+            {
+                'appointments': appointments
+            }
+        )
+

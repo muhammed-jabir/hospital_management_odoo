@@ -4,7 +4,7 @@ from odoo.exceptions import ValidationError
 
 class HospitalAppoinment(models.Model):
     _name = 'hospital.appoinment'
-    _description = 'Hospital Appoinment'
+    _description = 'Hospital Appointment'
 
     name = fields.Char(string='Patient Name', required=True)
     email = fields.Char(string='Email Address')
@@ -13,6 +13,7 @@ class HospitalAppoinment(models.Model):
     department_id = fields.Many2one('hospital.department', string='Department')
     doctor_id = fields.Many2one('hospital.doctor', string='Doctor', required=True)
     partner_id = fields.Many2one('res.partner', string='Partner account')
+    patient_id = fields.Many2one('hospital.patient', string='Patient',required=True)
     state = fields.Selection([
         ('pending', 'Pending'),
         ('confirmed', 'Confirmed'),
@@ -82,6 +83,8 @@ class HospitalAppoinment(models.Model):
             )
             if template:
                 template.sudo().send_mail(rec.id, force_send=True)
+
+    
 
     def action_complete(self):
         for rec in self:

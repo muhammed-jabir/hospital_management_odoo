@@ -65,16 +65,17 @@ class Hospital(http.Controller):
             'date': post.get('date'),
             'department_id': post.get('department_id'),
             'doctor_id': post.get('doctor_id'),
-            'slot_id': post.get('slot_id'),  # Storing the slot safely inside session storage
+            'slot_id': post.get('slot_id'),
             'medical_report': file_base64,
             'medical_report_filename': file_name,
         }
-        slot_id=post.get('slot_id')
+        slot_id = post.get('slot_id')
         if slot_id:
-            slot=request.env['hospital.doctor.slots'].sudo().browse(int())  #checking here and if 2nd person tryng cant access
-            if slot.state !='available':
+            slot = request.env['hospital.doctor.slots'].sudo().browse(int(slot_id))
+            if not slot.exists() or slot.state != 'available':
+                _logger.warning("Booking failed: slot_id=%s invalid or not available", slot_id)
                 return request.redirect('/booking')
-            slot.write({'state':'held','held_at':fields.Datetime.now()})
+            slot.write({'state': 'held', 'held_at': fields.Datetime.now()})
 
 
         # STEP B: Find or create a "contact" for this patient
@@ -91,6 +92,7 @@ class Hospital(http.Controller):
             [('code', '=', 'razorpay')], limit=1
         )
         if not provider:
+            _logger.warning("Booking failed: no payment.provider with code='razorpay' found/enabled")
             return request.redirect('/booking')
 
         inr_currency = request.env['res.currency'].sudo().search([('name', '=', 'INR')], limit=1)
@@ -111,6 +113,7 @@ class Hospital(http.Controller):
         # STEP E: Get Razorpay's checkout form and auto-submit it
         redirect_html = tx._get_processing_values().get('redirect_form_html')
         if not redirect_html:
+            _logger.warning("Booking failed: Razorpay did not return redirect_form_html for tx %s", tx.reference)
             return request.redirect('/booking')
 
         page = str(redirect_html) + '<script>document.forms[0].submit();</script>'
@@ -144,19 +147,18 @@ class Hospital(http.Controller):
             'doctor_id': int(data['doctor_id']) if data.get('doctor_id') else False,
             'slot_id': int(data['slot_id']) if data.get('slot_id') else False,
             'partner_id': tx.partner_id.id,
-            'state': 'confirmed',
+            'state': 'pending',
         }
         if data.get('medical_report'):
             appointment_vals['medical_report'] = data['medical_report'].encode('utf-8')
             appointment_vals['medical_report_filename'] = data['medical_report_filename']
 
-        appointment = request.env['hospital.appoinment'].sudo().create(appointment_vals)
-
-        template = request.env.ref(
-            'hospital_management.mail_template_appointment_confirmation', raise_if_not_found=False
-        )
-        if template:
-            template.sudo().send_mail(appointment.id, force_send=True)
+        # NOTE: appointment now lands as 'pending'. The confirmation email
+        # is sent when the doctor calls action_confirm() on the appointment
+        # (see appoinment.py) instead of automatically here. Payment
+        # succeeding just means the slot is booked and the appointment is
+        # awaiting the doctor's confirmation.
+        request.env['hospital.appoinment'].sudo().create(appointment_vals)
 
         request.session.pop('booking_data', None)
         return request.redirect('/booking-thank-you')
@@ -173,4 +175,3 @@ class Hospital(http.Controller):
         return request.render('hospital_management.my_appointments_page', {
             'appointments': appointments
         })
-    

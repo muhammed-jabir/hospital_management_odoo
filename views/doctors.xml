@@ -152,6 +152,7 @@
                 <filter string="Today" name="filter_today" domain="[('date','=', context_today().strftime('%Y-%m-%d'))]"/>
                 <filter string="Pending" name="filter_pending" domain="[('state','=','pending')]"/>
                 <filter string="Confirmed" name="filter_confirmed" domain="[('state','=','confirmed')]"/>
+                <filter string="Completed" name="filter_completed" domain="[('state','=','completed')]"/>
                 <separator/>
                 <group expand="0" string="Group By">
                     <filter string="Doctor" name="group_doctor" context="{'group_by':'doctor_id'}"/>
@@ -183,7 +184,7 @@
                             <i class="fa fa-calendar"/> <t t-esc="record.date.value"/>
                         </div>
                         <div class="mt-1">
-                            <span t-attf-class="badge badge-pill #{record.state.raw_value == 'confirmed' ? 'badge-success' : record.state.raw_value == 'cancelled' ? 'badge-danger' : 'badge-warning'}">
+                            <span t-attf-class="badge badge-pill #{record.state.raw_value == 'completed' ? 'badge-info' : record.state.raw_value == 'confirmed' ? 'badge-success' : record.state.raw_value == 'cancelled' ? 'badge-danger' : 'badge-warning'}">
                                 <t t-esc="record.state.value"/>
                             </span>
                         </div>
@@ -200,7 +201,16 @@
     <field name="arch" type="xml">
         <form>
             <header>
-                <field name="state" widget="statusbar" statusbar_visible="pending,confirmed,cancelled"/>
+                <button name="action_confirm" type="object" string="Confirm"
+                        class="btn-primary"
+                        attrs="{'invisible': [('state', '!=', 'pending')]}"/>
+                <button name="action_complete" type="object" string="Mark Completed"
+                        class="btn-primary"
+                        attrs="{'invisible': [('state', '!=', 'confirmed')]}"/>
+                <button name="action_cancel" type="object" string="Cancel"
+                        class="btn-secondary"
+                        attrs="{'invisible': [('state', 'in', ('cancelled', 'completed'))]}"/>
+                <field name="state" widget="statusbar" statusbar_visible="pending,confirmed,completed"/>
             </header>
             <sheet>
                 <group>
@@ -473,4 +483,3 @@ groups="hospital_management.group_hospital_doctor"
 </template>
 
 </odoo>
-

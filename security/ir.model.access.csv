@@ -17,3 +17,7 @@ access_hospital_slots_user,hospital.slots.user,model_hospital_doctor_slots,base.
 access_hospital_doctor_doctor,access.hospital.doctor.doctor,model_hospital_doctor,group_hospital_doctor,1,1,1,0
 access_hospital_patient_user,access.hospital.patient.user,model_hospital_patient,group_hospital_patient,1,0,0,0
 access_hospital_patient_admin,access.hospital.patient.admin,model_hospital_patient,group_hospital_admin,1,1,1,1
+access_hospital_prescription_admin,hospital.prescription.admin,model_hospital_prescription,hospital_management.group_hospital_admin,1,1,1,1
+access_hospital_prescription_doctor,hospital.prescription.doctor,model_hospital_prescription,hospital_management.group_hospital_doctor,1,1,1,0
+access_hospital_prescription_line_admin,hospital.prescription.line.admin,model_hospital_prescription_line,hospital_management.group_hospital_admin,1,1,1,1
+access_hospital_prescription_line_doctor,hospital.prescription.line.doctor,model_hospital_prescription_line,hospital_management.group_hospital_doctor,1,1,1,0

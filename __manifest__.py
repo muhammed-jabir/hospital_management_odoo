@@ -9,8 +9,8 @@
         'views/home.xml',
         'views/inherit_layout.xml',
         'views/booking.xml',
+        'views/prescription.xml',
         'views/doctors.xml',
-        'views/appoinment_report.xml',
         'views/doctor_slot_views.xml',
         'views/gallery.xml',
         'views/about.xml',
@@ -18,6 +18,10 @@
         'views/register.xml',
         'data/mail_template_new.xml',
         'data/crone.xml',
+        'data/prescription_sequence.xml',
+        'report/appoinment_report.xml',
+        'report/prescription_report.xml',
+        'report/prescription_template.xml'
 
 
 
@@ -31,8 +35,10 @@
 
         'hospital_management/static/src/css/style.css',
         'hospital_management/static/src/css/animation.css',
+        'hospital_management/static/src/css/cursor.css',
 
         'hospital_management/static/src/js/animation.js',
+        'hospital_management/static/src/js/cursor.js',
 
         ],
         'web.assets_backend':[

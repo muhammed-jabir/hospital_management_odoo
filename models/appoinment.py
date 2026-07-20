@@ -1,3 +1,5 @@
+from email.policy import default
+
 from odoo import fields, models, api
 from odoo.exceptions import ValidationError
 
@@ -25,6 +27,38 @@ class HospitalAppoinment(models.Model):
     slot_id = fields.Many2one('hospital.doctor.slots', string='Available Time Slots', required=True)
     amount = fields.Float(string='Fees', default=500.0)
     revenue = fields.Float(string='Revenue', compute='_compute_revenue', store=True)
+    has_prescription = fields.Boolean(
+        compute="_compute_has_prescription",
+        store=True,
+        default=True
+    )
+
+    prescription_id = fields.Many2one(
+        'hospital.prescription',
+        string="Prescription"
+    )
+
+    symptoms = fields.Text(
+        string="Symptoms"
+    )
+
+    diagnosis = fields.Text(
+        string="Diagnosis"
+    )
+
+    doctor_notes = fields.Text(
+        string="Doctor Notes"
+    )
+
+    follow_up_date = fields.Date(
+        string="Follow Up Date"
+    )
+
+    @api.depends('prescription_id')
+    def _compute_has_prescription(self):
+        for rec in self:
+            rec.has_prescription=bool(rec.prescription_id)
+
 
     @api.depends('amount', 'state')
     def _compute_revenue(self):
@@ -84,7 +118,7 @@ class HospitalAppoinment(models.Model):
             if template:
                 template.sudo().send_mail(rec.id, force_send=True)
 
-    
+
 
     def action_complete(self):
         for rec in self:
@@ -99,3 +133,17 @@ class HospitalAppoinment(models.Model):
             rec.state = 'cancelled'
             if rec.slot_id:
                 rec.slot_id.write({'state': 'available', 'held_at': False})
+
+    def action_create_prescription(self):
+        return {
+            'name': 'Prescription',
+            'type': 'ir.actions.act_window',
+            'res_model': 'hospital.prescription',
+            'view_mode': 'form',
+            'target': 'current',
+            'context': {
+                'default_patient_id': self.patient_id.id,
+                'default_doctor_id': self.doctor_id.id,
+                'default_appointment_id': self.id,
+            }
+        }

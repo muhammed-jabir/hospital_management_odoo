@@ -106,7 +106,9 @@ class DoctorDashboard extends Component {
 
             "hospital.doctor",
 
-            [],
+            [
+                ["user_id","=",this.env.services.user.userId]
+            ],
 
             [
                 "name",

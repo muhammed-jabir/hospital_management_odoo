@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_hospital_prescription_tree" model="ir.ui.view">
+        <field name="name">hospital.prescription.tree</field>
+        <field name="model">hospital.prescription</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="date"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_hospital_prescription_form" model="ir.ui.view">
+        <field name="name">hospital.prescription.form</field>
+        <field name="model">hospital.prescription</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="%(action_report_prescription)d"
+                            type="action"
+                            string="Print Prescription"
+                            class="btn-primary"/>
+                </header>
+
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="date"/>
+                            <field name="appointment_id" readonly="1"/>
+                        </group>
+
+                        <group>
+                            <field name="patient_id" readonly="1"/>
+                            <field name="doctor_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <field name="diagnosis"/>
+                        <field name="advice"/>
+                    </group>
+
+                    <field name="line_ids">
+                        <tree editable="bottom">
+                            <field name="medicine_name"/>
+                            <field name="dosage"/>
+                            <field name="frequency"/>
+                            <field name="duration"/>
+                            <field name="notes"/>
+                        </tree>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hospital_prescription" model="ir.actions.act_window">
+        <field name="name">Prescriptions</field>
+        <field name="res_model">hospital.prescription</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_hospital_prescription"
+              name="Prescriptions"
+              parent="menu_hospital_root"
+              action="action_hospital_prescription"
+              sequence="40"
+              groups="hospital_management.group_hospital_admin,hospital_management.group_hospital_doctor"/>
+
+</odoo>

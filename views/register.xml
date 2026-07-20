@@ -4,14 +4,15 @@
     <template id="register_page" name="Patient Register">
 
         <t t-call="website.layout">
+            <link rel="stylesheet" href="/hospital_management/static/src/css/register.css"/>
 
-            <div class="container mt-5 mb-5">
+            <div class="register-page">
 
                 <div class="row justify-content-center">
 
                     <div class="col-lg-6">
 
-                        <div class="card shadow p-4">
+                        <div class="register-card">
 
                             <h2 class="text-center mb-4">
                                 Create Patient Account
@@ -60,7 +61,7 @@
                                            required="required"/>
                                 </div>
 
-                                <button type="submit" class="btn btn-primary w-100">
+                                <button type="submit" class="register-btn">
                                     Register
                                 </button>
 

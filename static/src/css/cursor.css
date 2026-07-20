@@ -1,0 +1,30 @@
+.cursor-dot{
+    width:10px;
+    height:10px;
+    background:#0d6efd;
+    border-radius:50%;
+    position:fixed;
+    pointer-events:none;
+    z-index:9999;
+}
+
+
+.cursor-outline{
+
+    width:40px;
+    height:40px;
+
+    border:2px solid #0d6efd;
+
+    border-radius:50%;
+
+    position:fixed;
+
+    pointer-events:none;
+
+    z-index:9998;
+
+    transition:
+    transform .15s ease;
+
+}

@@ -13,6 +13,7 @@ function initSiteAnimation() {
     initFlipCarousel();
     initScrollAnimations();
     initFlipGallery();
+    initNewAnimation();
 
     ScrollTrigger.refresh();
 }
@@ -222,6 +223,30 @@ function initScrollAnimations() {
             scrollTrigger: {trigger: ".service-section", start: "top 80%"}
         }
     );
+}
+
+function initNewAnimation(){
+    gsap.utils.toArray("[data-animation]")
+    .forEach(card=>{
+
+
+    gsap.from(card,{
+
+    scrollTrigger:{
+    trigger:card,
+    start:"top 85%"
+    },
+
+    opacity:0,
+
+    y:80,
+
+    duration:1
+
+    })
+
+
+})
 }
 
 

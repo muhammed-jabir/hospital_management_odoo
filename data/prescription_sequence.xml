@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="seq_hospital_prescription" model="ir.sequence">
+        <field name="name">Hospital Prescription</field>
+        <field name="code">hospital.prescription</field>
+        <field name="prefix">RX/%(year)s/</field>
+        <field name="padding">4</field>
+    </record>
+
+</odoo>

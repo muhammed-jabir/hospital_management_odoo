@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="cron_release_expired_slot_holds" model="ir.cron">
+        <field name="name">Release Expired Slot Holds</field>
+        <field name="model_id" ref="model_hospital_doctor_slots"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_release_expired_holds()</field>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+        <field name="active">True</field>
+    </record>
+</odoo>

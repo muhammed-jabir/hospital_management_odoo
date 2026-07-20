@@ -8,67 +8,72 @@
         <!-- REPLACE HEADER -->
         <xpath expr="//header" position="replace">
 
-            <header style="background:#2c3e50; padding:15px; color:white;">
-                <div class="container">
+<header class="navbar navbar-expand-lg" style="background:#2c3e50; padding:15px; color:white;">                <div class="container d-flex justify-content-between align-items-center flex-wrap">
 
                     <h2>🏥 Caretera Hospital</h2>
 
-
- <nav>
-
-    <t t-foreach="website.menu_id.child_id" t-as="menu">
-
-        <!-- IF HAS CHILDREN → DROPDOWN -->
-        <t t-if="menu.child_id">
-
-            <div class="dropdown d-inline-block">
-
-                <a class="dropdown-toggle"
-                   href="#"
-                   data-bs-toggle="dropdown">
-
-                    <t t-esc="menu.name"/>
-
-                </a>
-
-                <ul class="dropdown-menu">
-
-                    <t t-foreach="menu.child_id" t-as="sub">
-
-                        <li>
-                            <a class="dropdown-item"
-                               t-att-href="sub.url">
-
-                                <t t-esc="sub.name"/>
-
-                            </a>
-                        </li>
-
-                    </t>
-
-                </ul>
-
-            </div>
-
-        </t>
-
-        <!-- NORMAL MENU -->
-        <t t-else="">
-
-            <a t-att-href="menu.url"
-               class="me-3">
-
-                <t t-esc="menu.name"/>
-
-            </a>
-
-        </t>
-
-    </t>
+<button class="navbar-toggler d-lg-none" type="button"
+        data-bs-toggle="collapse" data-bs-target="#hospitalNavMenu">
+    <span class="navbar-toggler-icon"></span>
+</button>
+                    <div class="collapse navbar-collapse id=hospitalNavMenu">
+                     <nav>
 
 
+                        <t t-foreach="website.menu_id.child_id" t-as="menu">
 
-</nav>
+                            <!-- IF HAS CHILDREN → DROPDOWN -->
+                            <t t-if="menu.child_id">
+
+                                <div class="dropdown d-inline-block">
+
+                                    <a class="dropdown-toggle"
+                                       href="#"
+                                       data-bs-toggle="dropdown">
+
+                                        <t t-esc="menu.name"/>
+
+                                    </a>
+
+                                    <ul class="dropdown-menu">
+
+                                        <t t-foreach="menu.child_id" t-as="sub">
+
+                                            <li>
+                                                <a class="dropdown-item"
+                                                   t-att-href="sub.url">
+
+                                                    <t t-esc="sub.name"/>
+
+                                                </a>
+                                            </li>
+
+                                        </t>
+
+                                    </ul>
+
+                                </div>
+
+                            </t>
+
+                            <!-- NORMAL MENU -->
+                            <t t-else="">
+
+                                <a t-att-href="menu.url"
+                                   class="me-3">
+
+                                    <t t-esc="menu.name"/>
+
+                                </a>
+
+                            </t>
+
+                        </t>
+
+
+
+                    </nav>
+                    </div>
 
                    <div class="ms-3">
 

@@ -81,6 +81,6 @@ class HospitalPrescriptionLine(models.Model):
 
     medicine_name = fields.Char(string='Medicine', required=True)
     dosage = fields.Char(string='Dosage', required=True)
-    frequency = fields.Char(string='Frequency', required=True)
+    frequency = fields.Char(string='Frequency')
     duration = fields.Char(string='Duration', required=True)
     notes = fields.Char(string='Notes')
